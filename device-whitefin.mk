@@ -14,12 +14,29 @@
 # limitations under the License.
 #
 
+TARGET_KERNEL_DIR ?= device/google/raviole-kernel
+TARGET_BOARD_KERNEL_HEADERS := device/google/raviole-kernel/kernel-headers
+
 $(call inherit-product-if-exists, vendor/google_devices/raviole/prebuilts/device-vendor-whitefin.mk)
 $(call inherit-product-if-exists, vendor/google_devices/gs101/prebuilts/device-vendor.mk)
 $(call inherit-product-if-exists, vendor/google_devices/gs101/proprietary/device-vendor.mk)
 $(call inherit-product-if-exists, vendor/google_devices/raviole/proprietary/whitefin/device-vendor-whitefin.mk)
 
 DEVICE_PACKAGE_OVERLAYS += device/google/raviole/whitefin/overlay
+
+#  SELinux config
+#SYSTEM_EXT_PUBLIC_SEPOLICY_DIRS += device/google/gs101-sepolicy/whitechapel/vendor/google/
+#PRODUCT_PUBLIC_SEPOLICY_DIRS += device/google/gs101-sepolicy/whitechapel/vendor/google/exo_camera_injection/
+#PRODUCT_PUBLIC_SEPOLICY_DIRS += device/google/gs101-sepolicy/usf/
+#PRODUCT_PUBLIC_SEPOLICY_DIRS += device/google/gs101-sepolicy/private/
+
+# exthmUI makefile
+include vendor/exthm/config/common.mk
+include vendor/exthm/config/BoardConfigExthm.mk
+
+# GMS install
+include vendor/gms/gms.mk
+
 
 include device/google/gs101/device-common.mk
 include hardware/google/pixel/vibrator/drv2624/device.mk

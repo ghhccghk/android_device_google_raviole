@@ -14,6 +14,9 @@
 # limitations under the License.
 #
 
+TARGET_KERNEL_DIR ?= device/google/raviole-kernel
+TARGET_BOARD_KERNEL_HEADERS := device/google/raviole-kernel/kernel-headers
+
 $(call inherit-product-if-exists, vendor/google_devices/raviole/prebuilts/device-vendor-oriole.mk)
 $(call inherit-product-if-exists, vendor/google_devices/gs101/prebuilts/device-vendor.mk)
 $(call inherit-product-if-exists, vendor/google_devices/gs101/proprietary/device-vendor.mk)
@@ -24,6 +27,20 @@ $(call inherit-product-if-exists, vendor/google_devices/raviole/proprietary/Wall
 
 GOODIX_CONFIG_BUILD_VERSION := g6_trusty
 DEVICE_PACKAGE_OVERLAYS += device/google/raviole/oriole/overlay
+
+#  SELinux config
+#SYSTEM_EXT_PUBLIC_SEPOLICY_DIRS += device/google/gs101-sepolicy/whitechapel/vendor/google/
+#PRODUCT_PUBLIC_SEPOLICY_DIRS += device/google/gs101-sepolicy/whitechapel/vendor/google/exo_camera_injection/
+#PRODUCT_PUBLIC_SEPOLICY_DIRS += device/google/gs101-sepolicy/usf/
+#PRODUCT_PUBLIC_SEPOLICY_DIRS += device/google/gs101-sepolicy/private/
+
+# exthmUI makefile
+include vendor/exthm/config/common.mk
+include vendor/exthm/config/BoardConfigExthm.mk
+
+# GMS install
+include vendor/gms/gms.mk
+
 
 include device/google/raviole/audio/oriole/audio-tables.mk
 include device/google/gs101/device-shipping-common.mk
@@ -161,14 +178,14 @@ PRODUCT_DEFAULT_PROPERTY_OVERRIDES += ro.surface_flinger.set_idle_timer_ms=1500
 PRODUCT_PROPERTY_OVERRIDES += ro.odm.build.media_performance_class=31
 
 # userdebug specific
-ifneq (,$(filter eng, $(TARGET_BUILD_VARIANT)))
+ifneq (,$(filter userdebug eng, $(TARGET_BUILD_VARIANT)))
     PRODUCT_COPY_FILES += \
         device/google/gs101/init.hardware.wlc.rc.userdebug:$(TARGET_COPY_OUT_VENDOR)/etc/init/init.wlc.rc
 endif
 
 # Increment the SVN for any official public releases
 PRODUCT_VENDOR_PROPERTIES += \
-    ro.vendor.build.svn=48
+    ro.vendor.build.svn=46
 
 # Set support hide display cutout feature
 PRODUCT_PRODUCT_PROPERTIES += \
@@ -232,7 +249,7 @@ PRODUCT_VENDOR_PROPERTIES += \
 PRODUCT_SHIPPING_API_LEVEL := 31
 
 # userdebug specific
-ifneq (,$(filter eng, $(TARGET_BUILD_VARIANT)))
+ifneq (,$(filter userdebug eng, $(TARGET_BUILD_VARIANT)))
 # Bluetooth LE Audio Hardware offload
 PRODUCT_PRODUCT_PROPERTIES += \
     ro.bluetooth.leaudio_offload.supported=true \
@@ -272,7 +289,3 @@ PRODUCT_DEFAULT_PROPERTY_OVERRIDES += \
 # Bluetooth OPUS codec
 PRODUCT_PRODUCT_PROPERTIES += \
     persist.bluetooth.opus.enabled=true
-
-# HBM
-PRODUCT_PACKAGES += \
-    HbmSVManagerOverlay
